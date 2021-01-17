@@ -35,6 +35,7 @@ jobs:
       - name: Install newman
         run: |
            npm install -g newman
+           npm install -g newman-reporter-html
            
       - name: Make Directory for results
         run: mkdir -p testResults
