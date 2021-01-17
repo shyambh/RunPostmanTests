@@ -42,7 +42,7 @@ jobs:
     # Run Postman Collection and output the file as html
       - name: Run Postman Collection
         run: |
-          newman run ./tests/contactList.postman_collection.json -e ./tests/contactList.postman_environment.json -r cli,html --reporter-html-template "./reporting theme/customReportingTemplate\template\template-default-colored.hbs" --reporter-html-export testResults/result.html
+          newman run ./tests/contactList.postman_collection.json -e ./tests/contactList.postman_environment.json -r cli,html --reporter-html-template "./reporting theme/customReportingTemplate\template\template-default-colored.hbs" --reporter-html-export ./testResults/result.html
           
     # Upload test results
       - name: Output the run details
