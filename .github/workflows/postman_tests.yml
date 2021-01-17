@@ -35,19 +35,18 @@ jobs:
       - name: Install newman
         run: |
            npm install -g newman
-           npm install -g newman-reporter-htmlextra   
-
+           
       - name: Make Directory for results
         run: mkdir -p testResults
         
     # Run Postman Collection and output the file as html
       - name: Run Postman Collection
         run: |
-          newman run ./tests/contactList.postman_collection.json -e ./tests/contactList.postman_environment.json htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
+          newman run ./tests/contactList.postman_collection.json -e ./tests/contactList.postman_environment.json -r cli,html --reporter-html-template "./reporting theme/customReportingTemplate\template\template-default-colored.hbs"
           
     # Upload test results
       - name: Output the run details
         uses: actions/upload-artifact@v2
         with:
           name: RunReports
-          path: testResults
+          
