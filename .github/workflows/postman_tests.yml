@@ -51,3 +51,14 @@ jobs:
         with:
           name: RunReport
           path: testResults/testReport.html
+          
+    # Send Message to Slack Channel
+      - name: Notify Slack
+        env:
+          SLACK_BOT_TOKEN:  xoxb-1647160842678-1677796682832-TKEkw7jfTyd5bW0sO7UalPyc
+        uses: pullreminders/slack-action@master
+        with:
+          args: '{"channel":"C1234567890","text":"Hello world"}'
+       
+          
+         
