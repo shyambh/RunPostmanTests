@@ -1,22 +1,8 @@
-# Chapter 01_01
+# GitHub Workflow to run the Postman tests via an Alexa Skill
 
-- Create a repository on GitHub using the [New Repository](https://github.com/new) page.  Name it something that relates to the lesson like `exercise-files`.
+- The `Postman API Tests` workflow is structured to be triggerd when a user instructs Alexa to run these tests via a voice command. Currently the skill is still under development however, the voice command triggers the workflow run and the user receives the build details including the Postman report in the configured Slack channel. 
 
-- In a terminal, run the following commands to initialize the directory as a git repository.
+- The exported collection file and environment variables file which are needed to run the Postman tests are under the `tests` folder and are in `json` format. The `reportingTheme` folder has the custom `hbs` reporting template used to style the output test report. The report is produced at the end of the worflow run as an artifact.  
+The tests are run via the CLI runner for Postman, called [Newman](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/).
 
-        git init
-        git add .
-        git commit -m 'first check in'
-
-- Now add the new repository you created as a remote for the local repo.
-
-        git remote add origin git@github.com:YOUR_GITHUB_USER_NAME_HERE/exercise-files.git
-
-- After the remote is added, push the files to the remote.
-
-        git push -u origin master
-
- - Browse to the repository on GitHub.com and reload the page to confirm the files have been properly pushed.
-
-Once the files are hosted on GitHub.com, you're ready to start making changes locally and pushing them to the remote repo.
-"# lesson-01-01" 
+- For sending out the notifications to the Slack channel after the run [action-slack-notify](https://github.com/rtCamp/action-slack-notify) is used and added as a step in the workflow job.
