@@ -39,6 +39,6 @@ jobs:
     # Run Postman Collection and output the file as html
       - name: Run Postman Collection
         env:
-          POSTMAN_API: ${{ POSTMAN_API_KEY }} 
+          POSTMAN_API: ${{ secrets.POSTMAN_API_KEY }} 
         run: |
-          newman run .tests/runAllMonitors/RunAllMonitors.postman_collection.json --env-var apiKey="%POSTMAN_API%" -e .tests/runAllMonitors/RunAllMonitorsEnv.postman_environment.json
+          newman run ./tests/runAllMonitors/RunAllMonitors.postman_collection.json --env-var apiKey="%POSTMAN_API%" -e ./tests/runAllMonitors/RunAllMonitorsEnv.postman_environment.json
