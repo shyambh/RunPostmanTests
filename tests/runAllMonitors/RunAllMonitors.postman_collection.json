@@ -1,0 +1,297 @@
+{
+	"info": {
+		"_postman_id": "7f24c77f-6fd7-4676-9f12-5d70717de561",
+		"name": "Run All Monitors",
+		"description": "Collection To Run All The Postman Monitors",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Monitors Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"var monitorUids = [];\r",
+							"\r",
+							"var allMonitors = jsonData.monitors;\r",
+							"var i = 0;\r",
+							"\r",
+							"for(i=0; i<allMonitors.length; i++)\r",
+							"{\r",
+							"    monitorUids.push(`${allMonitors[i].uid}`)\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"monitorUids\", monitorUids);\r",
+							"pm.environment.set(\"monitorCounter\", monitorUids.length);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.getpostman.com/monitors",
+					"protocol": "https",
+					"host": [
+						"api",
+						"getpostman",
+						"com"
+					],
+					"path": [
+						"monitors"
+					]
+				},
+				"description": "Request to get all the "
+			},
+			"response": []
+		},
+		{
+			"name": "Run A Particular Monitor",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var monitorUids = pm.variables.get(\"monitorUids\");\r",
+							"\r",
+							"if(!pm.environment.has(\"monitorCounter\")){\r",
+							"    console.log('Setting the monitor counter')\r",
+							"    pm.environment.set('monitorCounter', monitorUids.length);\r",
+							"}\r",
+							"\r",
+							"var currentIteration = parseInt(pm.environment.get('monitorCounter'))\r",
+							"console.log(`Current Iteration : ${currentIteration}`)\r",
+							"\r",
+							"pm.environment.set('currentMonitor', monitorUids[currentIteration-1])\r",
+							"\r",
+							"if(currentIteration > 0)\r",
+							"{   \r",
+							"    currentIteration--\r",
+							"    pm.environment.set('monitorCounter', currentIteration)\r",
+							"    postman.setNextRequest(\"Run A Particular Monitor\");\r",
+							"}\r",
+							"\r",
+							"else{\r",
+							"    pm.environment.set(\"currentMonitorIteration\", monitorUids.length);\r",
+							"    postman.setNextRequest(\"Get Particular Monitor Run Info\")\r",
+							"}\r",
+							"    \r",
+							"    \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"type": "text",
+						"value": "{{apiKey}}"
+					}
+				],
+				"url": {
+					"raw": "https://api.getpostman.com/monitors/{{currentMonitor}}/run",
+					"protocol": "https",
+					"host": [
+						"api",
+						"getpostman",
+						"com"
+					],
+					"path": [
+						"monitors",
+						"{{currentMonitor}}",
+						"run"
+					]
+				},
+				"description": "Request to get all the "
+			},
+			"response": []
+		},
+		{
+			"name": "Get Particular Monitor Run Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Store  the json response\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"var monitorUids = pm.variables.get(\"monitorUids\");\r",
+							"\r",
+							"if(!pm.environment.has(\"monitorCounter\")){\r",
+							"    console.log('Setting the monitor counter')\r",
+							"    pm.environment.set('monitorCounter', monitorUids.length);\r",
+							"}\r",
+							"\r",
+							"// Verifying the response code 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Loading the global variables with response\r",
+							"var timeInLocal = new Date(jsonData.monitor.lastRun.startedAt).toTimeString();\r",
+							"\r",
+							"pm.environment.set(\"monitorName\", jsonData.monitor.name);\r",
+							"pm.environment.set(\"monitorStatus\", jsonData.monitor.lastRun.status);\r",
+							"pm.environment.set(\"monitorRunDate\", timeInLocal);\r",
+							"pm.environment.set(\"monitorTotalAssertions\", jsonData.monitor.lastRun.stats.assertions.total);\r",
+							"pm.environment.set(\"monitorFailedAssertions\", jsonData.monitor.lastRun.stats.assertions.failed);\r",
+							"pm.environment.set(\"monitorTotalRequests\", jsonData.monitor.lastRun.stats.requests.total);\r",
+							"\r",
+							"// Setting the message color depending whether the build was successful or not\r",
+							"pm.test(\"Is build successfully completed\", function () {\r",
+							"    // If build succeeded without any issues\r",
+							"        if (pm.environment.get(\"monitorStatus\") != \"success\") {\r",
+							"            pm.environment.set(\"slack_monitorMessageColor\", \"#ed5934\");\r",
+							"        }\r",
+							"            \r",
+							"    // If build did not succeed\r",
+							"        else{\r",
+							"            pm.environment.set(\"slack_monitorMessageColor\", \"#338746\");\r",
+							"        }\r",
+							"    });\r",
+							"\r",
+							"var currentMonitorIteration = pm.environment.get('currentMonitorIteration');\r",
+							"\r",
+							"if(currentMonitorIteration > 0)\r",
+							"{   \r",
+							"    postman.setNextRequest(\"Post To Slack\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var monitorUids = pm.variables.get(\"monitorUids\");\r",
+							"\r",
+							"if(!pm.environment.has(\"currentMonitorIteration\")){\r",
+							"    console.log('Setting the monitor counter')\r",
+							"    pm.environment.set('currentMonitorIteration', monitorUids.length);\r",
+							"}\r",
+							"\r",
+							"var currentMonitorIteration = parseInt(pm.environment.get('currentMonitorIteration'))\r",
+							"console.log(`Current Monitor Iteration : ${currentMonitorIteration}`)\r",
+							"\r",
+							"pm.environment.set('monitorToSendToSlack', monitorUids[currentMonitorIteration-1])\r",
+							"\r",
+							"if(currentMonitorIteration > 0)\r",
+							"{   \r",
+							"    currentMonitorIteration--\r",
+							"    pm.environment.set('currentMonitorIteration', currentMonitorIteration)\r",
+							"}\r",
+							"\r",
+							"else\r",
+							"    postman.setNextRequest(null)\r",
+							"    \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.getpostman.com/monitors/{{monitorToSendToSlack}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"getpostman",
+						"com"
+					],
+					"path": [
+						"monitors",
+						"{{monitorToSendToSlack}}"
+					]
+				},
+				"description": "Request to get all the "
+			},
+			"response": []
+		},
+		{
+			"name": "Post To Slack",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var currentMonitorIteration = pm.environment.get('currentMonitorIteration');\r",
+							"\r",
+							"if(currentMonitorIteration > 0)\r",
+							"    postman.setNextRequest(\"Get Particular Monitor Run Info\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "xoxb-1647160842678-1677796682832-bEXTKU1byIhDsXl8zEcwQBa4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel\": \"G01KKU95K6F\",\r\n  \"attachments\": [\r\n      {\r\n          \"color\": \"{{slack_monitorMessageColor}}\",\r\n          \"pretext\": \"Triggered Monitor Run Result for : {{monitorName}}\",\r\n          \"fields\": [\r\n              {\r\n                  \"title\": \"Status\",\r\n                  \"value\": \"{{monitorStatus}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Total Assertions\",\r\n                  \"value\": \"{{monitorTotalAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Failed Assertions\",\r\n                  \"value\": \"{{monitorFailedAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Total Requests\",\r\n                  \"value\": \"{{monitorTotalAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\" : \"Time of Run\",\r\n                  \"value\": \"{{monitorRunDate}}\"\r\n              }\r\n          ]\r\n      }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://slack.com/api/chat.postMessage?channel=G01KKU95K6F",
+					"protocol": "https",
+					"host": [
+						"slack",
+						"com"
+					],
+					"path": [
+						"api",
+						"chat.postMessage"
+					],
+					"query": [
+						{
+							"key": "channel",
+							"value": "G01KKU95K6F"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
