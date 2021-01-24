@@ -256,7 +256,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "xoxb-1647160842678-1677796682832-bEXTKU1byIhDsXl8zEcwQBa4",
+							"value": "{{slackToken}}",
 							"type": "string"
 						}
 					]
