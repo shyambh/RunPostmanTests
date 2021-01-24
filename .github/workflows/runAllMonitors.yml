@@ -42,4 +42,4 @@ jobs:
           POSTMAN_API: ${{ secrets.POSTMAN_API_KEY }}
           SLACK_TOKEN: ${{ secrets.SLACK_BOT_TOKEN  }} 
         run: |
-          newman run ./tests/runAllMonitors/RunAllMonitors.postman_collection.json --env-var apiKey=%POSTMAN_API% --env-var slackToken=%SLACK_TOKEN% -e ./tests/runAllMonitors/RunAllMonitorsEnv.postman_environment.json
+          newman run ./tests/runAllMonitors/RunAllMonitors.postman_collection.json --env-var apiKey="%POSTMAN_API%" --env-var slackToken="%SLACK_TOKEN%" -e ./tests/runAllMonitors/RunAllMonitorsEnv.postman_environment.json
