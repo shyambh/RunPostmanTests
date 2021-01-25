@@ -265,7 +265,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"channel\": \"G01KKU95K6F\",\r\n  \"attachments\": [\r\n      {\r\n          \"color\": \"{{slack_monitorMessageColor}}\",\r\n          \"pretext\": \"Triggered Monitor Run Result for : {{monitorName}}\",\r\n          \"fields\": [\r\n              {\r\n                  \"title\": \"Status\",\r\n                  \"value\": \"{{monitorStatus}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Total Assertions\",\r\n                  \"value\": \"{{monitorTotalAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Failed Assertions\",\r\n                  \"value\": \"{{monitorFailedAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Total Requests\",\r\n                  \"value\": \"{{monitorTotalAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\" : \"Time of Run\",\r\n                  \"value\": \"{{monitorRunDate}}\"\r\n              }\r\n          ]\r\n      }\r\n  ]\r\n}",
+					"raw": "{\r\n  \"channel\": \"C01K4R1NFB7\",\r\n  \"attachments\": [\r\n      {\r\n          \"color\": \"{{slack_monitorMessageColor}}\",\r\n          \"pretext\": \"Triggered Monitor Run Result for : {{monitorName}}\",\r\n          \"fields\": [\r\n              {\r\n                  \"title\": \"Status\",\r\n                  \"value\": \"{{monitorStatus}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Total Assertions\",\r\n                  \"value\": \"{{monitorTotalAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Failed Assertions\",\r\n                  \"value\": \"{{monitorFailedAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\": \"Total Requests\",\r\n                  \"value\": \"{{monitorTotalAssertions}}\"\r\n              },\r\n              {\r\n                  \"title\" : \"Time of Run\",\r\n                  \"value\": \"{{monitorRunDate}}\"\r\n              }\r\n          ]\r\n      }\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -273,7 +273,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://slack.com/api/chat.postMessage?channel=G01KKU95K6F",
+					"raw": "https://slack.com/api/chat.postMessage?channel=C01K4R1NFB7",
 					"protocol": "https",
 					"host": [
 						"slack",
@@ -286,7 +286,7 @@
 					"query": [
 						{
 							"key": "channel",
-							"value": "G01KKU95K6F"
+							"value": "C01K4R1NFB7"
 						}
 					]
 				}
